@@ -1,4 +1,4 @@
-false jfa fks
-true dfsjdfhje 
-false jdfhjsv
-true vnu
+false Take out the dog
+true Finish homework
+false Workout at 6pm
+true Prepare dinner at 8pm
