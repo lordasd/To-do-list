@@ -45,7 +45,9 @@ int main()
         case EXIT:
             exit(EXIT_SUCCESS);
         default:
-            std::cout << "Wrong input\n\n";
+            std::cin.clear();
+            std::cin.ignore();
+            std::cout << "Invalid input\n\n";
             std::this_thread::sleep_for(std::chrono::seconds(1));
             break;
         }
