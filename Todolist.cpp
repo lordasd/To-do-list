@@ -6,6 +6,7 @@
 #include <fstream>
 #include "Todolist.hpp"
 
+//----------------------Create_List--------------------------//
 void Todolist::create_list(Todolist& list)
 {
     //Initialize default capacity
@@ -39,6 +40,7 @@ void Todolist::create_list(Todolist& list)
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
+//----------------------Add_To_List---------------------------//
 void Todolist::add_to_list(Todolist& list)
 {
     if(list.todo_list.size() == 0)
@@ -62,6 +64,7 @@ void Todolist::add_to_list(Todolist& list)
     }
 }
 
+//----------------------Show_List----------------------------//
 void Todolist::show_list(Todolist& list)
 {
     std::cout << "List\n_______\n\n";
@@ -109,6 +112,7 @@ void Todolist::show_list(Todolist& list)
     }
 }
 
+//------------------------Save_List-------------------------//
 void Todolist::save_list(Todolist& list)
 {
     std::ofstream out;
@@ -132,6 +136,7 @@ void Todolist::save_list(Todolist& list)
     out.close();
 }
 
+//------------------------Load_List------------------------//
 void Todolist::load_list(Todolist& list)
 {
     std::ifstream inp;
@@ -153,6 +158,7 @@ void Todolist::load_list(Todolist& list)
     inp.close();
 }
 
+//--------------------Delete_From_List--------------------//
 void Todolist::delete_from_list(Todolist& list)
 {
     std::cout << "Delete from list\n_____________\n\n";
@@ -187,6 +193,7 @@ void Todolist::delete_from_list(Todolist& list)
     }
 }
 
+//--------------------Delete_List------------------------//
 void Todolist::delete_list(Todolist& list)
 {
     if(list.todo_list.size() == 0)
@@ -214,6 +221,7 @@ void Todolist::delete_list(Todolist& list)
     }
 }
 
+//-------------------List_View-----------------------//
 void Todolist::list_view(Todolist& list)
 {
     for (size_t task = 0; task < list.todo_list.size(); ++task)
