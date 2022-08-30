@@ -13,37 +13,11 @@ void Todolist::create_list(Todolist& list)
     list.todo_list.clear();
     list.todo_list.reserve(10);
     list.done_list.reserve(10);
-    size_t num_of_tasks{};
-    std::string task{};
 
     std::cout << "Create a new list\n________________\n\n";
-    std::cout << "Input number of tasks to add(0 to cancel): ";
-    std::cin >> num_of_tasks;
+    //Add tasks to list
+    add_task(list);
 
-    while(!std::cin) //Wrong input(not int)
-    {
-        std::cin.clear();
-        std::cin.ignore();
-        std::cout << "Wrong input, try again: ";
-        std::cin >> num_of_tasks;
-    }
-
-    //Initialize requsted capacity if > default capacity
-    if(list.todo_list.capacity() < num_of_tasks)
-    {
-        list.todo_list.reserve(num_of_tasks);
-        list.done_list.reserve(num_of_tasks);
-        std::cout << num_of_tasks << " available tasks added for use.\n";
-    }
-    //Input tasks
-    for(size_t tasknum = 0; tasknum < num_of_tasks; ++tasknum)
-    {
-        std::cout << "Input " << tasknum+1 << " out of " << num_of_tasks << ": ";
-        std::getline(std::cin >> std::ws, task);
-        list.todo_list.push_back(task);
-        list.done_list.push_back(0);
-        std::cout << "Task added\n";
-    }
     std::cout << "\nTasks are added!\nReturning...\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
@@ -58,18 +32,9 @@ void Todolist::add_to_list(Todolist& list)
         return;
     }
 
-    while(true)
-    {
-        list.list_view(list);
-        std::cout << "Add task (0 to return): ";
-        std::string task;
-        std::getline(std::cin >> std::ws, task);
-        if(task == "0")
-            return;
-        list.todo_list.push_back(task);
-        list.done_list.push_back(0);
-        std::cout << "Task added!\n\n";
-    }
+    std::cout << "Add to list\n__________\n\n";
+
+    add_task(list);
 }
 
 //----------------------Show_List----------------------------//
@@ -91,6 +56,7 @@ void Todolist::show_list(Todolist& list)
 
         std::cout << "\n1) Mark done/undone task\n";
         std::cout << "2) Back\n";
+        std::cout << "Option: ";
 
         int input{};
         std::cin >> input;
@@ -244,5 +210,21 @@ void Todolist::list_view(Todolist& list)
             std::cout << task + 1 << "[v]" << list.todo_list[task] << "\n";
         else
             std::cout << task + 1 << "[]" << list.todo_list[task] << "\n";
+    }
+}
+//-------------------Add_Task-----------------------//
+void Todolist::add_task(Todolist& list)
+{
+    while(true)
+    {
+        list.list_view(list);
+        std::cout << "\nAdd task (0 to return): ";
+        std::string task;
+        std::getline(std::cin >> std::ws, task);
+        if(task == "0")
+            return;
+        list.todo_list.push_back(task);
+        list.done_list.push_back(0);
+        std::cout << "Task added!\n\n";
     }
 }
