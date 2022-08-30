@@ -7,6 +7,7 @@ class Todolist {
 public:
     void create_list(Todolist& list);
     void add_to_list(Todolist& list);
+    void add_task(Todolist& list);
     void show_list(Todolist& list);
     void list_view(Todolist& list);
     void save_list(Todolist& list);
