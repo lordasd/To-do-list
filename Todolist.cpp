@@ -13,12 +13,20 @@ void Todolist::create_list(Todolist& list)
     list.todo_list.clear();
     list.todo_list.reserve(10);
     list.done_list.reserve(10);
-    size_t num_of_tasks;
-    std::string task;
+    size_t num_of_tasks{};
+    std::string task{};
 
     std::cout << "Create a new list\n________________\n\n";
-    std::cout << "Input number of tasks to add: ";
+    std::cout << "Input number of tasks to add(0 to cancel): ";
     std::cin >> num_of_tasks;
+
+    while(!std::cin) //Wrong input(not int)
+    {
+        std::cin.clear();
+        std::cin.ignore();
+        std::cout << "Wrong input, try again: ";
+        std::cin >> num_of_tasks;
+    }
 
     //Initialize requsted capacity if > default capacity
     if(list.todo_list.capacity() < num_of_tasks)
@@ -92,9 +100,11 @@ void Todolist::show_list(Todolist& list)
             size_t task_mark{};
             std::cout << "Select a task to mark/unmark: ";
             std::cin >> task_mark;
-            while(task_mark < 1 && task_mark > list.todo_list.size())
+            while(task_mark < 1 || task_mark > list.todo_list.size())
             {
                 std::cout << "Invalid task index, try again: ";
+                std::cin.clear();
+                std::cin.ignore();
                 std::cin >> task_mark;
             }
             if(list.done_list[task_mark-1] == true)
@@ -106,7 +116,9 @@ void Todolist::show_list(Todolist& list)
             return;
         else
         {
-            std::cout << "Invalid task. Tasks:\n";
+            std::cout << "Invalid option.\n";
+            std::cin.clear();
+            std::cin.ignore();
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
@@ -141,6 +153,8 @@ void Todolist::load_list(Todolist& list)
 {
     std::ifstream inp;
     inp.open("savefile.txt");
+    list.todo_list.clear();
+    list.done_list.clear();
 
     while(!inp.eof())
     {
@@ -176,7 +190,7 @@ void Todolist::delete_from_list(Todolist& list)
         list.list_view(list);
 
         std::cout << "Choose task to delete: (0 to return): ";
-        size_t task{};
+        size_t task;
         std::cin >> task;
         if(task == 0)
             return;
@@ -187,7 +201,7 @@ void Todolist::delete_from_list(Todolist& list)
         }
         else
         {
-            std::cout << "Invalid input, try again\n";
+            std::cout << "Task doesn't exist.\n";
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
