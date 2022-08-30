@@ -51,6 +51,9 @@ int main()
             std::this_thread::sleep_for(std::chrono::seconds(1));
             break;
         }
+        //Clear invalid inputs
+        std::cin.clear();
+        std::cin.ignore();
     }
 
     return EXIT_SUCCESS;
