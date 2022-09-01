@@ -16,8 +16,8 @@ int main()
         std::cout << "| To-Do-List |\n";
         std::cout <<  " ------------\n\n";
         std::cout << "1) Create List\n2) Add to list\n3) Show list\n4) Save list\n";
-        std::cout << "5) Load list\n6) Delete from list\n7) Delete list\n8) Exit\n";
-        
+        std::cout << "5) Load list\n6) Delete from list\n7) Delete list\n8) Exit\n\n";
+        std::cout << "Option: ";
         std::cin >> input;
         switch (input)
         {
@@ -27,8 +27,8 @@ int main()
         case ADD_TO_LIST:
             list.add_to_list(list);
             break;
-        case SHOW_LIST:
-            list.show_list(list);
+        case SHOW_LISTS:
+            list.show_lists(list);
             break;
         case SAVE_LIST:
             list.save_list(list);
