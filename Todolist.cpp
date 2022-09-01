@@ -220,6 +220,7 @@ void Todolist::load_list(Todolist& list)
     if(!inp.is_open())
     {
         std::cout << "File did not open correctly.\nCheck if file exists.\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         return;
     }
     if(inp.eof())
