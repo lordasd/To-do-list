@@ -1,4 +1,8 @@
-false Take out the dog
+false Hometasks:
 true Finish homework
 false Workout at 6pm
+::
+false Outsidetasks:
+false Take out the dog
 true Prepare dinner at 8pm
+::
