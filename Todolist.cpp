@@ -4,40 +4,43 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
-#include "Todolist.hpp"
+#include "Todolist.h"
 
 //----------------------Create_List--------------------------//
-void Todolist::create_list(Todolist& list)
+void create_list(ToDoLists& lists)
 {
     std::cout << "Create a new list\n________________\n\n";
-    
-    std::vector<std::string> tasks;
-    std::vector<bool> done;
+
+    ToDoList list;
+    std::vector<ToDoList> todo_list;
+    /*lists.todo_lists.push_back(list);*/
     std::string list_title{};
 
-    if(list.todo_list.size() == 0)
-        list.todo_list.reserve(5);
+    if (lists.todo_lists.size() == 0)
+        lists.todo_lists.reserve(5);
     //Print Titles
-    title_lists_view(list.todo_list);
+    title_lists_view(lists);
     std::cout << "Enter list title: ";
-    std::cin >> list_title;
-    list_title = list_title + ": ";
-    tasks.push_back(list_title);
-    done.push_back(0);
-    
-    add_task(tasks, done);
-    list.todo_list.push_back(tasks);
-    list.done_list.push_back(done);
+    while (true)
+    {
+        std::cin >> list_title;
+        if (check_title(lists, list_title))
+            break;
+        std::cout << "Title is in use, try again: ";
+    }
+    list.title = list_title + ":";
 
+    add_task(list);
+    lists.todo_lists.push_back(list);
 
     std::cout << "\nList has been added.\nReturning...\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 //----------------------Add_To_List---------------------------//
-void Todolist::add_to_list(Todolist& list)
+void add_to_list(ToDoLists& lists)
 {
-    if(list.todo_list.size() == 0)
+    if (lists.todo_lists.size() == 0)
     {
         std::cout << "List is empty! Create a list first.\nReturning...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -46,44 +49,44 @@ void Todolist::add_to_list(Todolist& list)
 
     std::cout << "Add to list\n__________\n\n";
     size_t list_index{};
-    while(true)
+    while (true)
     {
-        title_lists_view(list.todo_list);
+        title_lists_view(lists);
         std::cout << "Choose a list: ";
         std::cin >> list_index;
-        if(list_index > 0 && list_index <= list.todo_list.size())
+        if (list_index > 0 && list_index <= lists.todo_lists.size())
             break;
         std::cout << "Wrong title. Try again...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    add_task(list.todo_list[list_index-1], list.done_list[list_index-1]);
+    add_task(lists.todo_lists[list_index - 1]);
 }
 
 //-------------------Add_Task-----------------------//
-void Todolist::add_task(std::vector<std::string>& tasks,
-                        std::vector<bool>& done)
+void add_task(ToDoList& list)
 {
-    while(true)
+    while (true)
     {
-        list_view(tasks, done); //Print current list
+        Task task;
+        list_view(list); //Print current list
         std::cout << "\nAdd task (0 to return): ";
-        std::string task;
-        std::getline(std::cin >> std::ws, task);
-        if(task == "0")
+        std::string curr_task;
+        std::getline(std::cin >> std::ws, curr_task);
+        task.todo = curr_task;
+        if (curr_task == "0")
             return;
-        tasks.push_back(task);
-        done.push_back(0);
+        list.todo_list.push_back(task);
         std::cout << "Task added!\n\n";
     }
 }
 
 //----------------------Show_Lists----------------------------//
-void Todolist::show_lists(Todolist& list)
+void show_lists(ToDoLists& lists)
 {
     std::cout << "List\n_______\n\n";
 
-    if(list.todo_list.size() == 0)
+    if (lists.todo_lists.size() == 0)
     {
         std::cout << "No existing lists!\nReturning...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -91,30 +94,29 @@ void Todolist::show_lists(Todolist& list)
     }
 
     //Print Titles
-    title_lists_view(list.todo_list);
+    title_lists_view(lists);
     std::cout << "Choose a list: (0 to return)";
     size_t list_input{};
-    while(true)
+    while (true)
     {
         std::cin >> list_input;
-        if(list_input == 0)
+        if (list_input == 0)
             return;
-        if(index_in_list(list.todo_list, list_input))
+        if (index_in_list(lists, list_input))
             break;
         else
             std::cout << "Wrong list, Try again: ";
     }
-    mark_tasks(list.todo_list[list_input-1], list.done_list[list_input-1]);
+    mark_tasks(lists.todo_lists[list_input - 1]);
 }
 
 //----------------------Mark_Tasks----------------------------//
-void Todolist::mark_tasks(std::vector<std::string>& tasklist,
-                std::vector<bool>& donelist)
+void mark_tasks(ToDoList& list)
 {
-    while(true)
-    { 
+    while (true)
+    {
         //Print whole task list
-        list_view(tasklist, donelist);
+        list_view(list);
 
         std::cout << "\n1) Mark done/undone task\n";
         std::cout << "2) Back\n";
@@ -123,47 +125,46 @@ void Todolist::mark_tasks(std::vector<std::string>& tasklist,
         size_t input{};
         std::cin >> input;
         //Mark/Unmark a task as done/undone
-        if(input == 1)
+        if (input == 1)
         {
             size_t task_mark{};
             std::cout << "Select a task to mark/unmark: ";
             std::cin >> task_mark;
-            while(task_mark < 0 || task_mark > tasklist.size())
+            while (task_mark < 0 || task_mark > list.todo_list.size())
             {
                 std::cout << "Invalid task index, try again: ";
                 std::cin.clear();
                 std::cin.ignore();
                 std::cin >> task_mark;
             }
-            if(task_mark == 0) //Fill whole list as done.
+            if (task_mark == 0) //Fill whole list as done.
             {
-                for(size_t task{}; task < tasklist.size(); ++task)
+                if (list.all_done) //Turn everything undone
                 {
-                    if(!donelist[task]) //Turn everthing done
-                    {
-                        for(size_t task{}; task < tasklist.size(); ++task)
-                            donelist[task] = true;
-                    }
-                    else //Turn everything undone
-                    {
-                        for(size_t task{}; task < donelist.size(); ++task)
-                            donelist[task] = false;
-                    }                                
-                }       
+                    for (size_t task{}; task < list.todo_list.size(); ++task)
+                        list.todo_list[task].task_status = STARTED;
+                    list.all_done = STARTED;
+                }
+                else               //Turn everything done
+                {
+                    for (size_t task{}; task < list.todo_list.size(); ++task)
+                        list.todo_list[task].task_status = FINISHED;
+                    list.all_done = FINISHED;
+                }
             }
             else //Change mark state
             {
-                if(donelist[task_mark] == true)
+                if (list.todo_list[task_mark - 1].task_status == FINISHED)
                 {
-                    donelist[task_mark] = false;
-                    donelist[0] = false; //Done all - disabled
-                }
+                    list.todo_list[task_mark - 1].task_status = STARTED;
+                    list.all_done = STARTED;
+                }     
                 else
-                    donelist[task_mark] = true;
+                    list.todo_list[task_mark-1].task_status = FINISHED;
             }
-            
+
         }
-        else if(input == 2)
+        else if (input == 2)
             return;
         else
         {
@@ -176,31 +177,38 @@ void Todolist::mark_tasks(std::vector<std::string>& tasklist,
 }
 
 //------------------------Save_List-------------------------//
-void Todolist::save_list(Todolist& list)
+void save_list(ToDoLists& lists)
 {
     std::ofstream out;
     out.open("savefile.txt");
-    if(!out.is_open())
+    if (!out.is_open())
     {
         std::cout << "File did not open correctly.\nCheck if file exists.\n";
+        return;
+    }
+    if (lists.todo_lists.size() == 0)
+    {
+        std::cout << "Nothing to save.\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         return;
     }
     //Clear file
     out.std::ofstream::out | std::ofstream::trunc;
 
-    for(size_t listindx = 0; listindx < list.todo_list.size(); ++listindx)
+    for (size_t listindx = 0; listindx < lists.todo_lists.size(); ++listindx)
     {
-        for(size_t task = 0; task < list.todo_list[listindx].size(); ++task)
+        out << lists.todo_lists[listindx].title << ":\n";
+        for (size_t task = 0; task < lists.todo_lists[listindx].todo_list.size(); ++task)
         {
-            if(list.done_list[listindx][task])
+            if (lists.todo_lists[listindx].todo_list[task].task_status)
                 out << "true ";
             else
                 out << "false ";
-            out << list.todo_list[listindx][task];
-            if(task < list.todo_list[listindx].size()-1)
+            out << lists.todo_lists[listindx].todo_list[task].todo;
+            if (task < lists.todo_lists[listindx].todo_list.size() - 1)
                 out << "\n";
         }
-        if(listindx < list.todo_list.size())
+        if (listindx < lists.todo_lists.size())
             out << "\n::\n";//meaning next list
     }
 
@@ -210,20 +218,19 @@ void Todolist::save_list(Todolist& list)
 }
 
 //------------------------Load_List------------------------//
-void Todolist::load_list(Todolist& list)
+void load_list(ToDoLists& lists)
 {
     std::ifstream inp;
     inp.open("savefile.txt");
-    list.todo_list.clear();
-    list.done_list.clear();
-    
-    if(!inp.is_open())
+    lists.todo_lists.clear();
+
+    if (!inp.is_open())
     {
         std::cout << "File did not open correctly.\nCheck if file exists.\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
         return;
     }
-    if(inp.eof())
+    if (inp.peek() == -1)
     {
         std::cout << "File is empty!\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -231,27 +238,37 @@ void Todolist::load_list(Todolist& list)
     }
 
     std::string str{};
-    std::vector<std::string> currlist;
-    std::vector<bool> currdonelist;
-    while(!inp.eof())
+
+    while (!inp.eof())
     {
-        inp >> str;
-        if(str == "::")
-        {   //Reading "::" twice;
-            if(currlist.size() == 0 || currdonelist.size() == 0)
+        ToDoList currlist;
+        size_t index{};
+
+        while (true)
+        {   
+            Task task;
+            inp >> str;
+            if (str == "::")
+            {
+                //Checking if it reads "::" twice, then finish.
+                if (currlist.todo_list.size() == 0)
+                    break;
+                lists.todo_lists.push_back(currlist);
                 break;
-            list.todo_list.push_back(currlist);
-            list.done_list.push_back(currdonelist);
-            currlist.clear();
-            currdonelist.clear();
-            continue;
+            }
+            if (str == "true")
+                task.task_status = FINISHED;
+            else if (str == "false")
+                task.task_status = STARTED;
+            else if (str[str.length() - 1] == ':')
+            {
+                currlist.title = str;
+                continue;
+            }
+            currlist.todo_list.push_back(task);
+            std::getline(inp >> std::ws, str);
+            currlist.todo_list[index++].todo = str;
         }
-        if(str == "true")
-            currdonelist.push_back(1);
-        else if(str == "false")
-            currdonelist.push_back(0);
-        std::getline(inp >> std::ws, str);
-        currlist.push_back(str);
     }
     std::cout << "Lists are loaded!\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -259,47 +276,42 @@ void Todolist::load_list(Todolist& list)
 }
 
 //--------------------Delete_From_List--------------------//
-void Todolist::delete_from_list(Todolist& list)
+void delete_from_list(ToDoLists& lists)
 {
     std::cout << "Delete from list\n_____________\n\n";
 
     //Check if list empty
-    if (list.todo_list.size() == 0)
+    if (lists.todo_lists.size() == 0)
     {
         std::cout << "List is empty! Create a list first.\nReturning...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
         return;
     }
 
-    while(true)
+    while (true)
     {
-        title_lists_view(list.todo_list);
+        title_lists_view(lists);
         std::cout << "Choose a list to delete from: ";
         size_t choice{};
-        while(true)
+        while (true)
         {
             std::cin >> choice;
-            if(index_in_list(list.todo_list, choice))
+            if (index_in_list(lists, choice))
                 break;
             std::cout << "Invalid choice, try again: \n";
         }
-        
-        //Get the 1d vectors for easier code writing
-        std::vector<std::string>& chosen_list = list.todo_list[choice-1];
-        std::vector<bool>& chosen_done = list.done_list[choice-1];
 
-        while(true)
+        while (true)
         {
-            list_view(chosen_list, chosen_done);
+            list_view(lists.todo_lists[choice - 1]);
             std::cout << "Choose task to delete: (0 to return): ";
             size_t task;
             std::cin >> task;
-            if(task == 0)
+            if (task == 0)
                 return;
-            else if(task > 0 && task <= chosen_list.size())
+            else if (task > 0 && task <= lists.todo_lists[choice - 1].todo_list.size())
             {
-                chosen_list.erase(chosen_list.begin()+task);
-                chosen_done.erase(chosen_done.begin()+task);
+                lists.todo_lists[choice - 1].todo_list.erase(lists.todo_lists[choice - 1].todo_list.begin() + task);
             }
             else
             {
@@ -311,9 +323,9 @@ void Todolist::delete_from_list(Todolist& list)
 }
 
 //--------------------Delete_List------------------------//
-void Todolist::delete_list(Todolist& list)
+void delete_list(ToDoLists& lists)
 {
-    if(list.todo_list.size() == 0)
+    if (lists.todo_lists.size() == 0)
     {
         std::cout << "List is empty! Create a list first.\nReturning...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -323,94 +335,99 @@ void Todolist::delete_list(Todolist& list)
     std::cout << "2) Delete all lists\n";
     std::cout << "3) Return\n";
     size_t choice{};
-    while(true)
+    while (true)
     {
         std::cin >> choice;
-        if(choice > 0 && choice < 4)
+        if (choice > 0 && choice < 4)
             break;
         std::cout << "Wrong choice, try again: ";
     }
 
-    if(choice == 1)
+    if (choice == 1)
     {
         size_t choice{};
-        while(true)
+        while (true)
         {
-            title_lists_view(list.todo_list);
+            title_lists_view(lists);
             std::cout << "Choose a list: (0 to return)";
-            
-            while(true)
+
+            while (true)
             {
                 std::cin >> choice;
-                if(index_in_list(list.todo_list, choice))
+                if (index_in_list(lists, choice))
                     break;
-                else if(choice == 0)
+                else if (choice == 0)
                     return;
                 std::cout << "Wrong choice, try again: ";
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
-            list.todo_list.erase(list.todo_list.begin()+choice-1);
-            list.done_list.erase(list.done_list.begin()+choice-1); 
+            lists.todo_lists.erase(lists.todo_lists.begin() + choice - 1);
             std::cout << "List has been removed!\n";
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
-    else if(choice == 2)
+    else if (choice == 2)
     {
         std::cout << "Are you sure you want to delete all lists?\n Yes/No: ";
         std::string input{};
-        while(true)
+        while (true)
         {
             std::cin >> input;
-            if(input == "Yes" || input == "yes")
+            if (input == "Yes" || input == "yes")
             {
-                list.todo_list.clear();
-                list.done_list.clear();
+                lists.todo_lists.clear();
                 std::cout << "Lists have been removed!\n";
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 return;
             }
-            else if(input == "No" || input == "no")
+            else if (input == "No" || input == "no")
                 return;
         }
     }
-    else if(choice == 3)
+    else if (choice == 3)
         return;
 }
 
 //-------------------List_View-----------------------//
-void Todolist::list_view(const std::vector<std::string> tasks,
-                         const std::vector<bool> done)
+void list_view(const ToDoList& list)
 {
-    for (size_t task = 0; task < tasks.size(); ++task)
+    size_t index{ 1 };
+
+    for (Task task : list.todo_list)
     {
-        if (done[task])
-            std::cout << task << "[v]" << tasks[task] << "\n";
+        if (task.task_status)
+            std::cout << index++ << "[v] " << task.todo << "\n";
         else
-            std::cout << task << "[]" << tasks[task] << "\n";
+            std::cout << index++ << "[] " << task.todo << "\n";
     }
+
 }
 
 //-------------------Title_Lists_View-----------------------//
-void Todolist::title_lists_view(const std::vector<std::vector<std::string>>& lists)
+void title_lists_view(const ToDoLists& lists)
 {
-    size_t index{1};
-    for(auto list: lists)
+    size_t index{ 1 };
+
+    for (ToDoList list : lists.todo_lists)
     {
-        for(auto listitle: list)
-        {   
-            std::cout << index << ") ";
-            std::cout << listitle << "\n";
-            break;
-        }
-        index++;
+        std::cout << index++ << ") ";
+        std::cout << list.title << "\n";
     }
 }
 
-//-------------------Index_In_List-----------------------//
-bool Todolist::index_in_list(const std::vector<std::vector<std::string>>& lists, size_t index)
+//-------------------Check_Title-----------------------//
+bool check_title(const ToDoLists& lists, std::string new_title)
 {
-    if(index > 0 && index <= lists.size())
+    for (ToDoList title : lists.todo_lists)
+        if (title.title == new_title + ":")
+            return false;
+    return true;
+}
+
+//-------------------Index_In_List-----------------------//
+bool index_in_list(const ToDoLists& lists, size_t index)
+{
+    if (index > 0 && index <= lists.todo_lists.size())
         return true;
     return false;
 }
