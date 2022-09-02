@@ -1,8 +1,8 @@
-false Hometasks:
+Hometasks:
 true Finish homework
 false Workout at 6pm
 ::
-false Outsidetasks:
+Outsidetasks:
 false Take out the dog
 true Prepare dinner at 8pm
 ::
