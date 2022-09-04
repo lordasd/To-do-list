@@ -3,7 +3,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include "Todolist.h"
+#include "Todolist.hpp"
 
 int main()
 {
@@ -46,7 +46,7 @@ int main()
             exit(EXIT_SUCCESS);
         default:
             std::cin.clear();
-            std::cin.ignore();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input\n\n";
             std::this_thread::sleep_for(std::chrono::seconds(1));
             break;
