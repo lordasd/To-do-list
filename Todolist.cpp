@@ -4,12 +4,12 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
-#include "Todolist.h"
+#include "Todolist.hpp"
 
 //----------------------Create_List--------------------------//
 void create_list(ToDoLists& lists)
 {
-    std::cout << "Create a new list\n________________\n\n";
+    std::cout << "\nCreate a new list\n________________\n\n";
 
     ToDoList list;
     std::vector<ToDoList> todo_list;
@@ -56,6 +56,8 @@ void add_to_list(ToDoLists& lists)
         std::cin >> list_index;
         if (list_index > 0 && list_index <= lists.todo_lists.size())
             break;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Wrong title. Try again...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -134,7 +136,7 @@ void mark_tasks(ToDoList& list)
             {
                 std::cout << "Invalid task index, try again: ";
                 std::cin.clear();
-                std::cin.ignore();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> task_mark;
             }
             if (task_mark == 0) //Fill whole list as done.
@@ -170,7 +172,7 @@ void mark_tasks(ToDoList& list)
         {
             std::cout << "Invalid option.\n";
             std::cin.clear();
-            std::cin.ignore();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
@@ -310,11 +312,11 @@ void delete_from_list(ToDoLists& lists)
             if (task == 0)
                 return;
             else if (task > 0 && task <= lists.todo_lists[choice - 1].todo_list.size())
-            {
                 lists.todo_lists[choice - 1].todo_list.erase(lists.todo_lists[choice - 1].todo_list.begin() + task);
-            }
             else
             {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Task doesn't exist.\n";
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
@@ -340,6 +342,8 @@ void delete_list(ToDoLists& lists)
         std::cin >> choice;
         if (choice > 0 && choice < 4)
             break;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Wrong choice, try again: ";
     }
 
@@ -358,6 +362,8 @@ void delete_list(ToDoLists& lists)
                     break;
                 else if (choice == 0)
                     return;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Wrong choice, try again: ";
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
