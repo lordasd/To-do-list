@@ -1,5 +1,5 @@
-#ifndef TODOLIST_H
-#define TODOLIST_H
+#ifndef TODOLIST_HPP
+#define TODOLIST_HPP
 
 //-----------------Structs------------------//
 struct Task {
@@ -54,4 +54,4 @@ enum Taskstatus {
     STARTED, FINISHED
 };
 
-#endif //TODOLIST_H
+#endif //TODOLIST_HPP
