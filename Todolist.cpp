@@ -4,9 +4,9 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
-#include "Todolist.hpp"
+#include "Todolist.h"
 
-//----------------------Create_List--------------------------//
+//----------------------Create_List------------------------//
 void create_list(ToDoLists& lists)
 {
     std::cout << "\nCreate a new list\n________________\n\n";
@@ -37,7 +37,7 @@ void create_list(ToDoLists& lists)
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
-//----------------------Add_To_List---------------------------//
+//----------------------Add_To_List------------------------//
 void add_to_list(ToDoLists& lists)
 {
     if (lists.todo_lists.size() == 0)
@@ -65,7 +65,7 @@ void add_to_list(ToDoLists& lists)
     add_task(lists.todo_lists[list_index - 1]);
 }
 
-//-------------------Add_Task-----------------------//
+//-----------------------Add_Task--------------------------//
 void add_task(ToDoList& list)
 {
     while (true)
@@ -83,7 +83,7 @@ void add_task(ToDoList& list)
     }
 }
 
-//----------------------Show_Lists----------------------------//
+//----------------------Show_Lists-------------------------//
 void show_lists(ToDoLists& lists)
 {
     std::cout << "List\n_______\n\n";
@@ -112,7 +112,7 @@ void show_lists(ToDoLists& lists)
     mark_tasks(lists.todo_lists[list_input - 1]);
 }
 
-//----------------------Mark_Tasks----------------------------//
+//----------------------Mark_Tasks-------------------------//
 void mark_tasks(ToDoList& list)
 {
     while (true)
@@ -178,7 +178,7 @@ void mark_tasks(ToDoList& list)
     }
 }
 
-//------------------------Save_List-------------------------//
+//------------------------Save_List------------------------//
 void save_list(ToDoLists& lists)
 {
     std::ofstream out;
@@ -277,7 +277,7 @@ void load_list(ToDoLists& lists)
     inp.close();
 }
 
-//--------------------Delete_From_List--------------------//
+//--------------------Delete_From_List---------------------//
 void delete_from_list(ToDoLists& lists)
 {
     std::cout << "Delete from list\n_____________\n\n";
@@ -324,7 +324,7 @@ void delete_from_list(ToDoLists& lists)
     }
 }
 
-//--------------------Delete_List------------------------//
+//----------------------Delete_List------------------------//
 void delete_list(ToDoLists& lists)
 {
     if (lists.todo_lists.size() == 0)
@@ -394,7 +394,7 @@ void delete_list(ToDoLists& lists)
         return;
 }
 
-//-------------------List_View-----------------------//
+//-----------------------List_View-------------------------//
 void list_view(const ToDoList& list)
 {
     size_t index{ 1 };
@@ -409,7 +409,7 @@ void list_view(const ToDoList& list)
 
 }
 
-//-------------------Title_Lists_View-----------------------//
+//-------------------Title_Lists_View----------------------//
 void title_lists_view(const ToDoLists& lists)
 {
     size_t index{ 1 };
@@ -421,7 +421,7 @@ void title_lists_view(const ToDoLists& lists)
     }
 }
 
-//-------------------Check_Title-----------------------//
+//---------------------Check_Title-------------------------//
 bool check_title(const ToDoLists& lists, std::string new_title)
 {
     for (ToDoList title : lists.todo_lists)
@@ -430,7 +430,7 @@ bool check_title(const ToDoLists& lists, std::string new_title)
     return true;
 }
 
-//-------------------Index_In_List-----------------------//
+//---------------------Index_In_List-----------------------//
 bool index_in_list(const ToDoLists& lists, size_t index)
 {
     if (index > 0 && index <= lists.todo_lists.size())
